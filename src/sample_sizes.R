@@ -61,3 +61,61 @@ max(df$age_in_years, na.rm = TRUE)
 ggplot(df, aes(x = age_in_years)) +
   geom_histogram() +
   theme_bw()
+
+
+
+
+
+#tally by sample type
+df %>%
+  group_by(feces) %>%
+  tally()
+
+df %>%
+  group_by(Tissue.Type) %>%
+  tally()
+
+#total fecal is 
+166+109
+nrow(df) - 275
+
+#remove fecal
+df_no_poop <- df |> 
+  filter(Tissue.Type != "Fecal") |> 
+  filter(feces != "Yes" & hair != "No")
+
+df <- df_no_poop
+
+df %>% 
+  group_by(Ownership) %>% 
+  tally()
+
+time_samples <- df %>%
+  group_by(year_c, Ownership) %>%
+  tally()
+
+ggplot(time_samples, aes(x=year_c, y = n, group = Ownership, color = Ownership, shape = Ownership, label = n)) +
+  geom_point(size = 3) +
+  geom_line()+
+  #geom_text(vjust = -1)+
+  scale_color_manual(values = c("MN" = "darkblue", "ND" = "darkgreen", "MUN" = "darkgrey")) +
+  scale_shape_manual(values = c("MN" = 16, "ND" = 17, "MUN" = 15)) +
+  theme_bw()
+
+
+cm_total <- time_samples %>%
+  group_by(Ownership) %>%
+  mutate(cumulative_total = cumsum(n))
+
+ggplot(cm_total, aes(x=year_c, y = cumulative_total, color = Ownership, shape = Ownership, label = n)) +
+  geom_point(size = 3) +
+  geom_text(vjust = -1)+
+  scale_color_manual(values = c("MN" = "darkblue", "ND" = "darkgreen", "MUN" = "darkgrey")) +
+  scale_shape_manual(values = c("MN" = 16, "ND" = 17, "MUN" = 15)) +
+  theme_bw()
+
+max(df$age_in_years, na.rm = TRUE)
+
+ggplot(df, aes(x = age_in_years)) +
+  geom_histogram() +
+  theme_bw()
